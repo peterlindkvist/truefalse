@@ -39,6 +39,7 @@ Game.prototype.init = function($el){
   });
 
   this.$text = document.createElement('div');
+  this.$text.innerText = "Click on the screen to start. \nPress on the right side for true, and left side for false.";
   Game.applyStyle(this.$text, {
     position : 'absolute',
     padding : '20px',
@@ -60,15 +61,31 @@ Game.prototype.init = function($el){
   });
 
   this.$points = document.createElement('div');
+  this.$points.innerText = '0 points';
   Game.applyStyle(this.$points, {
     position : 'absolute',
+    top : '10px',
+    right : '10px',
+    fontFamily : 'monospace',
+    zIndex : 2
+  });
+
+  this.$github = document.createElement('a');
+  this.$github.setAttribute('href','https://github.com/peterlindkvist/truefalse');
+  this.$github.innerText = 'Fork me!';
+  Game.applyStyle(this.$github, {
+    position : 'absolute',
+    color: 'black',
     top : '10px',
     left : '10px',
     fontFamily : 'monospace',
     zIndex : 2
   });
 
+
+
   this.$left = document.createElement('div');
+  this.$left.innerText = 'false';
   Game.applyStyle(this.$left, {
     position : 'absolute',
     bottom : '10px',
@@ -78,6 +95,7 @@ Game.prototype.init = function($el){
   });
 
   this.$right = document.createElement('div');
+  this.$right.innerText = 'true';
   Game.applyStyle(this.$right, {
     position : 'absolute',
     bottom : '10px',
@@ -89,12 +107,9 @@ Game.prototype.init = function($el){
   this.$el.appendChild(this.$text);
   this.$el.appendChild(this.$time);
   this.$el.appendChild(this.$points);
+  this.$el.appendChild(this.$github);
   this.$el.appendChild(this.$left);
   this.$el.appendChild(this.$right);
-
-  this.$text.innerText = 'Click on the screen to start. Press on the right side for true, and left side for false.';
-  this.$right.innerText = 'true';
-  this.$left.innerText = 'false';
 
   this.$el.addEventListener('click', this.clickHandler.bind(this));
 
