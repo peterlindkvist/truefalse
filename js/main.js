@@ -1,10 +1,10 @@
 var Game = function(){};
 
 Game.questions = [
-  '!0;',
-  '+true === NaN;',
-  '+true === 1;',
-  '(new Date()).getTime() == +new Date();',
+  '!0',
+  '+true === NaN',
+  '+true === 1',
+  '(new Date()).getTime() === +new Date()',
   '010 === 10',
   '0x10 > 010',
   '"1" + 1 + 1 === "111"',
@@ -12,12 +12,15 @@ Game.questions = [
   '!!~~"0.5"',
   "~1 === -1",
   "Infinity/Infinity === 1",
-  'var a = 1; a++ + ++a === 2;',
+  'var a = 1; a++ + ++a === 2',
   'null == undefined',
   'NaN === NaN',
   '[0][0] === 0',
-  '({a: "b"})["a"]',
-
+  '({a: true})["a"]',
+  '1|2 === 1||2',
+  '1<<1<<1 === 2',
+  '2>>>1 === 1',
+  'Object.assign({a:true}, {a:false}, {a:false})["a"]'
 ];
 
 Game.colors = {
@@ -30,6 +33,19 @@ Game.AWARD = 5000;
 
 Game.prototype.init = function($el){
   this.$el = $el;
+
+  //randomize the questions, but always start with the first easy one.
+  var easy = Game.questions.shift();
+  Game.questions.sort(function(){return Math.random() < .5 ? -1 : 1});
+  Game.questions.unshift(easy);
+
+  var textStyle = {
+    position : 'absolute',
+    fontFamily : 'monospace',
+    zIndex : 2,
+    color: 'black'
+  };
+
   Game.applyStyle(this.$el, {
     backgroundColor : Game.colors.green,
     position : 'relative',
@@ -40,16 +56,13 @@ Game.prototype.init = function($el){
 
   this.$text = document.createElement('div');
   this.$text.innerText = "Click on the screen to start. \nPress on the right side for true, and left side for false.";
-  Game.applyStyle(this.$text, {
-    position : 'absolute',
+  Game.applyStyle(this.$text, Object.assign({}, textStyle, {
     padding : '20px',
     transform : 'translateY(-50%)',
     top : '50%',
     width : 'calc(100% - 40px)',
-    fontFamily : 'monospace',
-    textAlign : 'center',
-    zIndex : 2
-  });
+    textAlign : 'center'
+  }));
 
   this.$time = document.createElement('div');
   Game.applyStyle(this.$time, {
@@ -62,47 +75,32 @@ Game.prototype.init = function($el){
 
   this.$points = document.createElement('div');
   this.$points.innerText = '0 points';
-  Game.applyStyle(this.$points, {
-    position : 'absolute',
+  Game.applyStyle(this.$points, Object.assign({}, textStyle, {
     top : '10px',
-    right : '10px',
-    fontFamily : 'monospace',
-    zIndex : 2
-  });
+    right : '10px'
+  }));
 
   this.$github = document.createElement('a');
   this.$github.setAttribute('href','https://github.com/peterlindkvist/truefalse');
   this.$github.innerText = 'Fork me!';
-  Game.applyStyle(this.$github, {
-    position : 'absolute',
-    color: 'black',
+  Game.applyStyle(this.$github, Object.assign({}, textStyle, {
     top : '10px',
-    left : '10px',
-    fontFamily : 'monospace',
-    zIndex : 2
-  });
-
-
+    left : '10px'
+  }));
 
   this.$left = document.createElement('div');
   this.$left.innerText = 'false';
-  Game.applyStyle(this.$left, {
-    position : 'absolute',
+  Game.applyStyle(this.$left, Object.assign({}, textStyle, {
     bottom : '10px',
-    left : '10px',
-    fontFamily : 'monospace',
-    zIndex : 2
-  });
+    left : '10px'
+  }));
 
   this.$right = document.createElement('div');
   this.$right.innerText = 'true';
-  Game.applyStyle(this.$right, {
-    position : 'absolute',
+  Game.applyStyle(this.$right, Object.assign({}, textStyle, {
     bottom : '10px',
-    right : '10px',
-    fontFamily : 'monospace',
-    zIndex : 2
-  });
+    right : '10px'
+  }));
 
   this.$el.appendChild(this.$text);
   this.$el.appendChild(this.$time);
@@ -159,7 +157,7 @@ Game.prototype.start = function(){
 Game.prototype.end = function(win){
   this.state = 'end';
   if(win){
-    this.$text.innerText = 'Mission completed';
+    this.$text.innerText = 'No more questions, open a pull request!';
     this.$time.style.height = '0%';
   } else {
     this.$text.innerText = 'Game Over';
@@ -176,14 +174,9 @@ Game.prototype.tick = function(){
   if(percent < 0){
     this.end(false);
   } else {
-    this.render(Game.questions[this.pos], percent);
+    this.$text.innerText = Game.questions[this.pos];
+    this.$time.style.height = 100 - 100 * percent + '%';
   }
-
-};
-
-Game.prototype.render = function(text, percent){
-  this.$text.innerText = text;
-  this.$time.style.height = 100 - 100 * percent + '%';
 };
 
 Game.applyStyle = function($el, styles){
@@ -191,7 +184,6 @@ Game.applyStyle = function($el, styles){
     $el.style[s] = styles[s];
   }
 };
-
 
 var g = new Game();
 g.init(document.querySelector('.game'));
