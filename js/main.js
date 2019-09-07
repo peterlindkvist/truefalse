@@ -1,5 +1,6 @@
 const QUESTIONS = [
   "!0",
+  "(a => !a)(false)",
   "+true === NaN",
   "+true === 1",
   "(new Date()).getTime() === +new Date()",
@@ -18,7 +19,7 @@ const QUESTIONS = [
   "1|2 === 1||2",
   "1<<1<<1 === 2",
   "2>>>1 === 1",
-  'Object.assign({a:true}, {a:false}, {a:false})["a"]'
+  '{...{a:true}, ...{a:false}, ...{a:false}}["a"]'
 ];
 
 const colors = {
@@ -127,6 +128,8 @@ function calculate(val) {
   if (correct) {
     points++;
     elements.$points.innerText = points + " points";
+  } else {
+    end(false);
   }
 
   questionIndex++;
@@ -134,11 +137,7 @@ function calculate(val) {
     end(true);
   }
 
-  endTime += correct ? AWARD : -AWARD;
-
-  if (endTime - TOTALTIME > currentTime) {
-    endTime = currentTime + TOTALTIME;
-  }
+  endTime = currentTime + TOTALTIME;
 }
 
 function start() {
