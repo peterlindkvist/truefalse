@@ -117,6 +117,15 @@ function init($el) {
       calculate(e.x > $el.offsetWidth / 2);
     }
   });
+  window.addEventListener("keydown", e => {
+    if (state !== "run") {
+      start();
+    } else if (e.key === "ArrowLeft" || e.key === "a") {
+      calculate(false);
+    } else if (e.key === "ArrowRight" || e.key === "d") {
+      calculate(true);
+    }
+  });
 
   state = "init";
 }
