@@ -19,7 +19,7 @@ const QUESTIONS = [
   "1|2 === 1||2",
   "1<<1<<1 === 2",
   "2>>>1 === 1",
-  '{...{a:true}, ...{a:false}, ...{a:false}}["a"]'
+  "({...{a:true} , ...{a:false}}).a"
 ];
 
 const colors = {
@@ -40,6 +40,9 @@ const elements = {};
 let interval;
 
 function init($el) {
+  //test all questions
+  QUESTIONS.map(q => eval(q));
+
   //randomize the questions, but always start with the first easy one.
   questions = [
     QUESTIONS[0],
@@ -48,7 +51,6 @@ function init($el) {
       .sort((a, b) => a.r - b.r)
       .map(i => i.q)
   ];
-  console.log("questions", questions);
 
   var textStyle = {
     position: "absolute",
